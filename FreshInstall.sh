@@ -121,7 +121,7 @@ echo " "
 echo "----------------------------------------------------------------"
 echo "Commence Zigbee2MQTT Setup"
 echo "----------------------------------------------------------------"
-wget https://raw.githubusercontent.com/EddieDSuza/techwitheddie/main/configuration.yaml -P data
+wget https://raw.githubusercontent.com/EddieDSuza/techwitheddie/main/configuration.yaml -P /home/dennis/data
 echo " "
 sudo docker run --name zigbee2mqtt --device=/dev/ttyUSB0 --net host --restart unless-stopped -v $(pwd)/data:/app/data -v /run/udev:/run/udev:ro -e TZ=Asia/Dubai koenkk/zigbee2mqtt
 echo "----------------------------------------------------------------"
