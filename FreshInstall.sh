@@ -6,63 +6,13 @@
 echo " "
 echo " "
 echo " "
-# System Update
-echo "----------------------------------------------------------------"
-echo "Commence System Update"
-echo "----------------------------------------------------------------"
-sudo apt update
-echo "----------------------------------------------------------------"
-echo "System Update Completed"
-echo "----------------------------------------------------------------"
-echo " "
-echo " "
-echo " "
-# Install Nala
-echo "----------------------------------------------------------------"
-echo "Install Nala"
-echo "----------------------------------------------------------------"
-sudo apt install nala -y
-echo "----------------------------------------------------------------"
-echo "Install Nala Completed"
-echo "----------------------------------------------------------------"
-echo " "
-echo " "
-echo " "
-# Install other tools
-echo "----------------------------------------------------------------"
-echo "Install other tools"
-echo "----------------------------------------------------------------"
-sudo nala install curl -y
-sudo nala install gpg -y
-sudo nala install wget -y
-echo "----------------------------------------------------------------"
-echo "Install tools Completed"
-echo "----------------------------------------------------------------"
-echo " "
-echo " "
-echo " "
 # System Upgrade
 echo "----------------------------------------------------------------"
 echo "Commence System Upgrade"
 echo "----------------------------------------------------------------"
-sudo nala update && sudo nala upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y
 echo "----------------------------------------------------------------"
 echo "System Upgrade Completed"
-echo "----------------------------------------------------------------"
-echo " "
-echo " "
-echo " "
-# Install Homebridge
-echo "----------------------------------------------------------------"
-echo "Install Homebridge"
-echo "----------------------------------------------------------------"
-curl -sSfL https://repo.homebridge.io/KEY.gpg | sudo gpg --dearmor | sudo tee /usr/share/keyrings/homebridge.gpg  > /dev/null
-echo "deb [signed-by=/usr/share/keyrings/homebridge.gpg] https://repo.homebridge.io stable main" | sudo tee /etc/apt/sources.list.d/homebridge.list > /dev/null
-sudo nala update
-sudo nala install homebridge -y
-sudo hb-service update-node
-echo "----------------------------------------------------------------"
-echo "Homebridge install Completed"
 echo "----------------------------------------------------------------"
 echo " "
 echo " "
@@ -72,8 +22,8 @@ echo "----------------------------------------------------------------"
 echo "Commence Docker Setup"
 echo "----------------------------------------------------------------"
 curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh &&
-sudo usermod -aG docker dennis
+sudo sh get-docker.sh
+sudo usermod -aG docker pi
 echo "----------------------------------------------------------------"
 echo "Docker Setup Completed"
 echo "----------------------------------------------------------------"
@@ -109,7 +59,7 @@ echo "----------------------------------------------------------------"
 sudo mkdir mosquitto &&
 sudo mkdir mosquitto/config/ &&
 sudo mkdir mosquitto/data/ &&
-sudo wget https://raw.githubusercontent.com/EddieDSuza/maxilife/main/mosquitto.conf -P /home/dennis/mosquitto/config/ &&
+sudo wget https://raw.githubusercontent.com/EddieDSuza/maxilife/main/mosquitto.conf -P /home/pi/mosquitto/config/ &&
 sudo docker run -it --name MQTT --restart unless-stopped --net=host -tid -p 1883:1883 -v $(pwd)/mosquitto:/mosquitto/ eclipse-mosquitto
 echo "----------------------------------------------------------------"
 echo "MQTT Setup Completed"
@@ -121,9 +71,9 @@ echo " "
 echo "----------------------------------------------------------------"
 echo "Commence Zigbee2MQTT Setup"
 echo "----------------------------------------------------------------"
-wget https://raw.githubusercontent.com/EddieDSuza/techwitheddie/main/configuration.yaml -P /home/dennis/data
+wget https://raw.githubusercontent.com/EddieDSuza/techwitheddie/main/configuration.yaml -P data
 echo " "
-sudo docker run --name zigbee2mqtt --device=/dev/ttyUSB0 --net host --restart unless-stopped -v $(pwd)/data:/app/data -v /run/udev:/run/udev:ro -e TZ=Asia/Dubai koenkk/zigbee2mqtt
+sudo docker run --name zigbee2mqtt --device=/dev/ttyACM0 --net host --restart unless-stopped -v $(pwd)/data:/app/data -v /run/udev:/run/udev:ro -e TZ=Asia/Bangkok koenkk/zigbee2mqtt
 echo "----------------------------------------------------------------"
 echo "Z2M Interface is reachable at homebridge.local:8081"
 echo "----------------------------------------------------------------"
@@ -145,25 +95,12 @@ echo " "
 echo "----------------------------------------------------------------"
 echo "Commence HEIMDALL Setup"
 echo "----------------------------------------------------------------"
-sudo mkdir /home/kodestar &&
 sudo mkdir /home/kodestar/docker
 echo " "
 sudo docker run --name=heimdall -d --restart unless-stopped -v /home/kodestar/docker/heimdall:/config -e PGID=1000 -e PUID=1000 -p 8201:80 -p 8200:443 linuxserver/heimdall
 echo " "
 echo "----------------------------------------------------------------"
 echo "HEIMDALL Interface is reachable at homebridge.local:8201"
-echo "----------------------------------------------------------------"
-echo " "
-echo " "
-echo " "
-# CasaOS setup
-echo "----------------------------------------------------------------"
-echo "Commence CASAOS Setup"
-echo "----------------------------------------------------------------"
-echo " "
-curl -fsSL https://get.casaos.io | sudo bash
-echo "----------------------------------------------------------------"
-echo "CasaOS installation complete"
 echo "----------------------------------------------------------------"
 echo " "
 echo " "
@@ -175,4 +112,4 @@ echo " "
 echo " "
 echo " "
 echo "Rebooting Now"
-sudo reboot
+sudo reboot now
